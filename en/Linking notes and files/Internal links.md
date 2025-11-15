@@ -20,10 +20,10 @@ Obsidian can automatically update internal links in your vault when you rename a
 
 Obsidian supports the following link formats:
 
-- Wikilink: `[[Three laws of motion]]`
-- Markdown: `[Three laws of motion](Three%20laws%20of%20motion.md)`
+- Wikilink: `[[Three laws of motion]]` or `[[Three laws of motion.md]]`
+- Markdown: `[Three laws of motion](Three%20laws%20of%20motion)` or `[Three laws of motion](Three%20laws%20of%20motion.md)`
 
-The examples above are equivalent—they appear the same way in the editor, and links to the same note.
+The examples above are equivalent, and they appear the same way in the editor and links to the same note.
 
 > [!note]
 > When using the Markdown format, make sure to [URL encode](https://en.wikipedia.org/wiki/Percent-encoding) the link destination. For example, blank spaces become `%20`.
@@ -163,7 +163,7 @@ Use `[Display text](Link URL)` to customize how the link appears.
 
 This method is helpful for one-off situations where you want to change how a link looks in a specific context. If you want to set up an alternate link name that you can reuse throughout your vault, consider using an [[Aliases|alias]] instead. 
 
-For example, if you regularly refer to `[[Three laws of motion]]` as `[[The 3 laws]]`, adding "3 laws" as an alias allows you to type just that—no need to add custom display text each time.
+For example, if you regularly refer to `[[Three laws of motion]]` as `[[The 3 laws]]`, adding "3 laws" as an alias lets you type just that — no need to add custom display text each time.
 
 > [!tip]
 > Use [[#Change the link display text|link display text]] when you want to customize how a link looks *in a specific place*.  
