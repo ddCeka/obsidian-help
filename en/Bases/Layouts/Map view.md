@@ -1,12 +1,14 @@
 ---
 permalink: bases/views/map
 ---
-Display files in a [[Introduction to Bases|Base]] as an interactive map with markers for each file, and a preview that displays properties of that file.
+Map is a type of [[Views|view]] you can use in [[Introduction to Bases|Bases]].
+
+Select ![[lucide-map.svg#icon]]  **Map** from the view menu to display files as an interactive map with markers for each file, and a preview that displays properties of that file.
 
 ![[bases-map-places.png#interface]]
 
-> [!info] Requires Obsidian 1.10 and the Maps plugin
-> Map views require Obsidian 1.10 which is currently in [[Early access versions|early access]].  The [Maps plugin](https://github.com/obsidianmd/obsidian-maps) is an official [[Community plugins|community plugin]] that you can download separately.
+> [!info] Requires the Maps plugin
+> Map views require Obsidian 1.10. The [Maps plugin](https://github.com/obsidianmd/obsidian-maps) is an official [[Community plugins|community plugin]] that you can download separately.
 
 ## Example
 
@@ -104,3 +106,7 @@ Map tiles are a standard way to display digital maps. There are several services
 - [Maputnik](https://maputnik.github.io/) for customizing map tiles.
 - [Protomaps](https://protomaps.com/) for self-hosting map tiles.
 - Other hosted services with free tiers include [MapTiler](https://www.maptiler.com/) and [Mapbox](https://www.mapbox.com/).
+
+## Troubleshooting
+
+If the map appears blank when you first load the Maps plugin, try [[Update Obsidian|updating the Obsidian installer version]].
