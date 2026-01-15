@@ -14,7 +14,7 @@ Learn how to link to notes, attachments, and other files from your notes, using 
 
 Obsidian can automatically update internal links in your vault when you rename a file. If you want to be prompted instead, you can disable it under: 
 
-**[[Settings]]** → **Files & Links** → **Automatically update internal links**.
+**[[Settings]]** → **[[Settings#Files and links|Files and links]]** → **[[Settings#Automatically update internal links|Automatically update internal links]]**.
 
 ## Supported formats for internal links
 
@@ -56,6 +56,9 @@ While you can link to any of the [[Accepted file formats]], links to file format
 
 > [!tip] Prefixing an internal link with an exclamation mark (!) allows you to embed the linked content. For more details, see [[Embed Files]].
 
+> [!info] Excluded files
+> Files matching your [[Settings#Excluded files|Excluded files]] patterns are deprioritized in link suggestions when creating internal links.
+
 ## Link to a heading in a note
 
 You can link to specific headings in notes, also known as _anchor links_.
@@ -70,7 +73,7 @@ For example, `[[#Preview a linked file]]` will create a link to [[#Preview a l
 
 To link to a heading in another note, add a hash (`#`) at the end of the link destination, followed by the heading text.
 
-For example, `[[Obsidian#Links are first-class citizens]]` will create a link to [[Obsidian#Links are first-class citizens]].
+For example, `[[About Obsidian#Links are first-class citizens]]` will create a link to [[About Obsidian#Links are first-class citizens]].
 
 **Linking to subheadings**
 
