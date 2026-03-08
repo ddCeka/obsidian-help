@@ -4,12 +4,12 @@ description: Anything you can do in Obsidian can be done from the command line.
 ---
 Obsidian CLI is a command line interface that lets you control Obsidian from your terminal for scripting, automation, and integration with external tools.
 
-Anything you can do in Obsidian can be done from the command line. Obsidian CLI even includes [[#Developer commands|developer commands]] to access developer tools, inspect elements, take screenshots, reload plugins, and more.
+Anything you can do in Obsidian you can do from the command line. Obsidian CLI even includes [[#Developer commands|developer commands]] to access developer tools, inspect elements, take screenshots, reload plugins, and more.
 
 ![[obsidian-cli.mp4#interface]]
 
-> [!warning] Early access feature
-> Obsidian CLI requires Obsidian 1.12 or above, which is currently an [[Early access versions|early access version]] and requires a [[Catalyst license]]. Commands and syntax are likely to change during the early access phase.
+> [!warning] Requires Obsidian 1.12 installer
+> Using the CLI requires the Obsidian 1.12 installer. See the [[Update Obsidian#Installer updates|installer version update guide]].
 
 ## Install Obsidian CLI
 
@@ -21,13 +21,16 @@ Enable Obsidian CLI in Obsidian:
 2. Enable **Command line interface**.
 3. Follow the prompt to register Obsidian CLI.
 
-On Windows you will also need to run the `.com` file, available to [[Catalyst license|Catalyst]] members on Discord. See [[#Troubleshooting]] for help.
+If you run into issues installing Obsidian CLI see [[#Troubleshooting]].
 
 ## Get started
 
-**Note:** Obsidian CLI requires the Obsidian app to be running. If Obsidian is not running, the first command you run launches Obsidian.
-
 Obsidian CLI supports both single commands and a terminal user interface (TUI) with interactive help and autocomplete.
+
+> [!info] Obsidian app must be running
+> Obsidian CLI requires the Obsidian app to be running. If Obsidian is not running, the first command you run launches Obsidian.
+>
+> Looking to sync without the desktop app? See [[Obsidian Headless|Obsidian Headless]].
 
 ### Run a command
 
@@ -88,7 +91,7 @@ Many [[#Developer commands]] are available for plugin and theme development. The
 
 ```shell
 # Open developer tools
-obsidian dev:open
+obsidian devtools
 
 # Reload a community plugin you're developing
 obsidian plugin:reload id=my-plugin
@@ -97,7 +100,7 @@ obsidian plugin:reload id=my-plugin
 obsidian dev:screenshot path=screenshot.png
 
 # Run JavaScript in the app console
-obsidian dev:eval code="app.vault.getFiles().length"
+obsidian eval code="app.vault.getFiles().length"
 ```
 
 ## How to
@@ -118,11 +121,11 @@ A **parameter** takes a value, written as `parameter=value`. If the value has sp
 obsidian create name=Note content="Hello world"
 ```
 
-A **flag** is a boolean switch with no value. Include it to turn it on, for example `silent` and `overwrite` are flags:
+A **flag** is a boolean switch with no value. Include it to turn it on, for example `open` and `overwrite` are flags:
 
 ```shell
-# Create the note in the background and overwrite any existing content
-obsidian create name=Note content="Hello" silent overwrite
+# Create a note and open it
+obsidian create name=Note content="Hello" open overwrite
 ```
 
 For multiline content use `\n` for newline. Use `\t` for tab.
@@ -135,14 +138,14 @@ obsidian create name=Note content="# Title\n\nBody text"
 
 If your terminal's current working directory is a vault folder, that vault is used by default. Otherwise, the currently active vault is used.
 
-Use `vault=<name>` to target a specific vault. This must be the first parameter before your command:
+Use `vault=<name>` or `vault=<id>` to target a specific vault. This must be the first parameter before your command:
 
 ```shell
 obsidian vault=Notes daily
 obsidian vault="My Vault" search query="test"
 ```
 
-In the TUI, use `vault:open <name>` to switch to a different vault.
+In the TUI, use `vault:open <name>` or `<id>` to switch to a different vault.
 
 ### Target a file
 
@@ -173,6 +176,10 @@ search query="TODO" --copy
 
 Show list of all available commands.
 
+| Parameter   | Description                       |
+| ----------- | --------------------------------- |
+| `<command>` | Show help for a specific command. |
+
 ### `version`
 
 Show Obsidian version.
@@ -200,13 +207,16 @@ List views in the current base file.
 
 ### `base:create`
 
-Create a new item in the current base view.
+Create a new item in a base. Defaults to the active base view if no file is specified.
 
 ```bash
-name=<name>        # file name
+file=<name>        # base file name
+path=<path>        # base file path
+view=<name>        # view name
+name=<name>        # new file name
 content=<text>     # initial content
 
-silent             # create without opening
+open               # open file after creating
 newtab             # open in new tab
 ```
 
@@ -232,6 +242,7 @@ List bookmarks.
 ```bash
 total              # return bookmark count
 verbose            # include bookmark types
+format=json|tsv|csv  # output format (default: tsv)
 ```
 
 ### `bookmark`
@@ -269,12 +280,12 @@ id=<command-id>    # (required) command ID to execute
 
 ### `hotkeys`
 
-List hotkeys.
+List hotkeys for all commands.
 
 ```bash
 total              # return hotkey count
-all                # include commands without hotkeys
 verbose            # show if hotkey is custom
+format=json|tsv|csv  # output format (default: tsv)
 ```
 
 ### `hotkey`
@@ -297,9 +308,11 @@ Open daily note.
 
 ```bash
 paneType=tab|split|window    # pane type to open in
-
-silent             # return path without opening
 ```
+
+### `daily:path`
+
+Get daily note path. Returns the expected path even if the file hasn't been created yet.
 
 ### `daily:read`
 
@@ -314,7 +327,7 @@ content=<text>     # (required) content to append
 paneType=tab|split|window    # pane type to open in
 
 inline             # append without newline
-silent             # do not open file
+open               # open file after adding
 ```
 
 ### `daily:prepend`
@@ -326,7 +339,7 @@ content=<text>     # (required) content to prepend
 paneType=tab|split|window    # pane type to open in
 
 inline             # prepend without newline
-silent             # do not open file
+open               # open file after adding
 ```
 
 ## File history
@@ -478,7 +491,7 @@ content=<text>     # initial content
 template=<name>    # template to use
 
 overwrite          # overwrite if file exists
-silent             # create without opening
+open               # open file after creating
 newtab             # open in new tab
 ```
 
@@ -517,12 +530,22 @@ inline             # prepend without newline
 
 ### `move`
 
-Move or rename a file (default: active file).
+Move or rename a file (default: active file). This will automatically update [[internal links]] if turned on in your [[Settings#Automatically update internal links|vault settings]].
 
 ```bash
 file=<name>        # file name
 path=<path>        # file path
 to=<path>          # (required) destination folder or path
+```
+
+### `rename`
+
+Rename a file (default: active file). The file extension is preserved automatically if omitted from the new name. Use [[#`move`|move]] to rename and move a file at the same time. This will automatically update [[internal links]] if turned on in your [[Settings#Automatically update internal links|vault settings]].
+
+```bash
+file=<name>        # file name
+path=<path>        # file path
+name=<name>        # (required) new file name
 ```
 
 ### `delete`
@@ -550,6 +573,7 @@ path=<path>        # target file path
 
 counts             # include link counts
 total              # return backlink count
+format=json|tsv|csv  # output format (default: tsv)
 ```
 
 ### `links`
@@ -571,6 +595,7 @@ List unresolved links in vault.
 total              # return unresolved link count
 counts             # include link counts
 verbose            # include source files
+format=json|tsv|csv  # output format (default: tsv)
 ```
 
 ### `orphans`
@@ -579,7 +604,6 @@ List files with no incoming links.
 
 ```bash
 total              # return orphan count
-all                # include non-markdown files
 ```
 
 ### `deadends`
@@ -588,7 +612,6 @@ List files with no outgoing links.
 
 ```bash
 total              # return dead-end count
-all                # include non-markdown files
 ```
 
 ## Outline
@@ -602,7 +625,7 @@ Show headings for the current file.
 ```bash
 file=<name>        # file name
 path=<path>        # file path
-format=tree|md     # output format (default: tree)
+format=tree|md|json  # output format (default: tree)
 
 total              # return heading count
 ```
@@ -619,6 +642,7 @@ List installed plugins.
 filter=core|community  # filter by plugin type
 
 versions               # include version numbers
+format=json|tsv|csv    # output format (default: tsv)
 ```
 
 ### `plugins:enabled`
@@ -629,6 +653,7 @@ List enabled plugins.
 filter=core|community  # filter by plugin type
 
 versions               # include version numbers
+format=json|tsv|csv    # output format (default: tsv)
 ```
 
 ### `plugins:restrict`
@@ -698,31 +723,31 @@ Commands related to [[Properties]].
 
 ### `aliases`
 
-List aliases (default: active file).
+List aliases in the vault. Use `active` or `file`/`path` to show aliases for a specific file.
 
 ```bash
 file=<name>        # file name
 path=<path>        # file path
 
-all                # list all aliases in vault
 total              # return alias count
 verbose            # include file paths
+active             # show aliases for active file
 ```
 
 ### `properties`
 
-List properties (default: active file).
+List properties in the vault. Use `active` or `file`/`path` to show properties for a specific file.
 
 ```bash
 file=<name>        # show properties for file
 path=<path>        # show properties for path
 name=<name>        # get specific property count
 sort=count         # sort by count (default: name)
-format=yaml|tsv    # output format (default: yaml)
+format=yaml|json|tsv  # output format (default: yaml)
 
-all                # list all properties in vault
 total              # return property count
 counts             # include occurrence counts
+active             # show properties for active file
 ```
 
 ### `property:set`
@@ -825,7 +850,6 @@ Open a random note.
 folder=<path>      # limit to folder
 
 newtab             # open in new tab
-silent             # return path without opening
 ```
 
 ### `random:read`
@@ -842,16 +866,28 @@ Commands for [[Search]].
 
 ### `search`
 
-Search vault for text.
+Search vault for text. Returns matching file paths.
 
 ```bash
 query=<text>       # (required) search query
 path=<folder>      # limit to folder
-limit=<n>          # max results
+limit=<n>          # max files
 format=text|json   # output format (default: text)
 
 total              # return match count
-matches            # show match context
+case               # case sensitive
+```
+
+### `search:context`
+
+Search with matching line context. Returns grep-style `path:line: text` output.
+
+```bash
+query=<text>       # (required) search query
+path=<folder>      # limit to folder
+limit=<n>          # max files
+format=text|json   # output format (default: text)
+
 case               # case sensitive
 ```
 
@@ -866,6 +902,9 @@ query=<text>       # initial search query
 ## Sync
 
 Commands for [[Introduction to Obsidian Sync|Obsidian Sync]].
+
+> [!tip] Sync without the desktop app
+> These commands control Sync within the running Obsidian app. To sync vaults from the command line without the desktop app, see [[Headless Sync]].
 
 ### `sync`
 
@@ -934,16 +973,17 @@ Commands for [[Tags]].
 
 ### `tags`
 
-List tags (default: active file).
+List tags in the vault. Use `active` or `file`/`path` to show tags for a specific file.
 
 ```bash
 file=<name>        # file name
 path=<path>        # file path
 sort=count         # sort by count (default: name)
 
-all                # list all tags in vault
 total              # return tag count
 counts             # include tag counts
+format=json|tsv|csv  # output format (default: tsv)
+active             # show tags for active file
 ```
 
 ### `tag`
@@ -963,28 +1003,29 @@ Commands for task management.
 
 ### `tasks`
 
-List tasks (default: active file).
+List tasks in the vault. Use `active` or `file`/`path` to show tasks for a specific file.
 
 ```bash
 file=<name>        # filter by file name
 path=<path>        # filter by file path
 status="<char>"    # filter by status character
 
-all                # list all tasks in vault
-daily              # show tasks from daily note
 total              # return task count
 done               # show completed tasks
 todo               # show incomplete tasks
 verbose            # group by file with line numbers
+format=json|tsv|csv  # output format (default: text)
+active             # show tasks for active file
+daily              # show tasks from daily note
 ```
 
 **Examples:**
 
 ```bash
-# List all tasks
+# List all tasks in the vault
 tasks
 
-# List incomplete tasks
+# List incomplete tasks in the vault
 tasks todo
 
 # List completed tasks from a specific file
@@ -1159,7 +1200,7 @@ name=<text>        # note name
 content=<text>     # initial content
 paneType=tab|split|window    # pane type to open in
 
-silent             # create without opening
+open               # open file after creating
 ```
 
 ## Vault
@@ -1174,7 +1215,7 @@ info=name|path|files|folders|size  # return specific info only
 
 ### `vaults`
 
-List known vaults (desktop only).
+List known vaults.
 
 ```bash
 total              # return vault count
@@ -1436,20 +1477,15 @@ These shortcuts are available in the [[#Use the terminal interface|TUI]].
 
 If you are having trouble running Obsidian CLI:
 
-- Make sure you are using the latest [[Update Obsidian|Obsidian installer version]] (1.11.7) and the latest [[Early access versions|early access version]] (1.12).
+- Make sure you are using the latest [[Update Obsidian|Obsidian installer version]] (1.12.4 or above).
 - Restart your terminal after registering the CLI for the PATH changes to take effect.
 - Obsidian must be running. The CLI connects to the running Obsidian instance. If Obsidian is not running, the first CLI command should launch the app.
 
 ### Windows
 
-Windows requires using a terminal redirector that connects to Obsidian to stdin/stdout properly. This is unfortunately necessary because Obsidian normally runs as a GUI app which is incompatible with terminal outputs.
+Obsidian CLI on Windows requires the Obsidian 1.12.4+ installer. See [[Update Obsidian|Installer version update]].
 
-To get this file, go to the official Obsidian Discord in the `#insider-desktop-release` channel. Requires a [[Catalyst license]].
-
-- Download the `Obsidian.com` file [here](https://discord.com/channels/686053708261228577/716028884885307432/1470798383085261057).
-- Place the `Obsidian.com` file in the folder where you installed the `Obsidian.exe` file, which could be one of these paths:
-	- `C:\Users\<YourUsername>\AppData\Local\Programs\obsidian\`
-	- `C:\Users\<YourUsername>\AppData\Local\obsidian\`
+Windows uses a terminal redirector that connects Obsidian to stdin/stdout properly. This is necessary because Obsidian normally runs as a GUI app which is incompatible with terminal outputs on Windows. When you install Obsidian 1.12.4+ the `Obsidian.com` terminal redirector will be added in the folder where you installed the `Obsidian.exe` file.
 
 ### macOS
 
